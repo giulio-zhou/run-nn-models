@@ -77,7 +77,7 @@ def draw_tf_bounding_boxes(
         min_score_thresh=0.3)
     return image_np
 
-def post_process_tf_objdet_bboxes(inputs, outputs, score_threshold=0.3):
+def post_process_tf_objdet_bboxes(inputs, outputs, score_threshold=0.0):
     from constants import coco_class_ids_to_names as class_ids_to_names
     output_annotations = []
     all_boxes, all_scores, all_classes, num_detections = outputs
@@ -189,8 +189,8 @@ def ssd_mobilenet_v1_coco_detection_features(batch_size=1):
 
 def yolo_v2_model(model_path, batch_size=1):
     def create_yolo_v2_model(K):
-        score_threshold, iou_threshold = 0.3, 0.5
-        max_boxes = 50
+        score_threshold, iou_threshold = 0.0, 0.5
+        max_boxes = 100
         from keras.models import load_model
         from constants import coco_classes as class_names
         from constants import yolo_anchors as anchors
@@ -204,7 +204,8 @@ def yolo_v2_model(model_path, batch_size=1):
             input_image_shape,
             score_threshold=score_threshold,
             iou_threshold=iou_threshold,
-            batch_size=batch_size)
+            batch_size=batch_size,
+            max_boxes=max_boxes)
     return create_yolo_v2_model
 
 def yolo_v2(batch_size=1):
@@ -366,6 +367,10 @@ def tf_get_model_fn(model_name, batch_size=1):
         return tf_detection_labels('ssd_inception_v2_coco', batch_size)
     elif model_name == 'faster_rcnn_resnet101_coco_detection_labels':
         return tf_detection_labels('faster_rcnn_resnet101_coco', batch_size)
+    elif model_name == 'rfcn_resnet101_coco_detection_labels':
+        return tf_detection_labels('rfcn_resnet101_coco', batch_size)
+    elif model_name == 'mask_rcnn_inception_resnet_v2_atrous_coco_detection_labels':
+        return tf_detection_labels('mask_rcnn_inception_resnet_v2_atrous_coco', batch_size)
     elif model_name == 'ssd_mobilenet_v1_coco_detection_features':
         return ssd_mobilenet_v1_coco_detection_features(batch_size)
     elif model_name == 'ssd_mobilenet_v1_coco_feature_extractor':

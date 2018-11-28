@@ -15,8 +15,8 @@ prog() {
 
     input_width=512
     input_height=512
-    sed -i "s/width=416/width=$input_width/g" yolo.cfg
-    sed -i "s/height=416/height=$input_height/g" yolo.cfg
+    sed -i "s/width=608/width=$input_width/g" yolo.cfg
+    sed -i "s/height=608/height=$input_height/g" yolo.cfg
 
     python yad2k.py yolo.cfg yolo.weights model_data/yolo.h5
     rm yolo.weights yolo.cfg
